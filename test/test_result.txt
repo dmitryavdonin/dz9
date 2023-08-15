@@ -1,0 +1,260 @@
+
+D:\dev\otus\dz9>newman run ./test/"dz9.postman_collection.json" 
+newman
+
+dz9
+
+□ Пререквизиты
+└ Добавить book 1 с ценой 5 в продажу
+  POST http://arch.homework/book/ [200 OK, 316B, 92ms]
+  ┌
+  │ {
+  │   id: 7,
+  │   title: 'Microservice Architecture',
+  │   author: 'Chris Richardson',
+  │   price: 5,
+  │   created_at: '2023-08-15T18:14:34.01089Z',
+  │   modified_at: '2023-08-15T18:14:34.010891Z'
+  │ }
+  └
+  √  Добавить book 1 с ценой 5 в продажу
+
+└ Разместить 5 штук book 1 на складе
+  POST http://arch.homework/store/book/ [200 OK, 274B, 12ms]
+  ┌
+  │ {
+  │   id: 4,
+  │   book_id: 7,
+  │   in_stock: 5,
+  │   created_at: '2023-08-15T18:14:34.179108634Z',
+  │   modified_at: '2023-08-15T18:14:34.179108634Z'
+  │ }
+  └
+  √  Разместить 5 штук book 1 на складе
+
+└ Добавить покупателя с балансом 10
+  POST http://arch.homework/user/ [200 OK, 284B, 11ms]
+  ┌
+  │ {
+  │   id: 5,
+  │   username: 'i.petrov',
+  │   balance: 10,
+  │   created_at: '2023-08-15T18:14:34.266195206Z',
+  │   modified_at: '2023-08-15T18:14:34.266195306Z'
+  │ }
+  └
+  √  Добавить покупателя
+
+□ Заказ 1 (успешный)
+└ Создать заказ 1
+  POST http://arch.homework/order/ [200 OK, 401B, 12ms]
+  ┌
+  │ {
+  │   id: 11,
+  │   book_id: 7,
+  │   quantity: 1,
+  │   user_id: 5,
+  │   delivery_address: 'Moscow, Shabolovka, 13',
+  │   delivery_date: '2023-08-23T00:00:00Z',
+  │   status: 'pending',
+  │   reason: '',
+  │   created_at: '2023-08-15T18:14:34.343416904Z',
+  │   modified_at: '2023-08-15T18:14:34.343416904Z'
+  │ }
+  └
+  √  Создать заказ 1
+
+└ Проверить статус заказа 1 через 2 секунды
+  GET http://arch.homework/order/11 [200 OK, 395B, 7ms]
+  ┌
+  │ 'Order status: success, reason: '
+  └
+  √  Проверить статус заказа 1 через 2 секунды
+
+└ Проверить статус заказа 1 на складе
+  GET http://arch.homework/store/order/11 [200 OK, 313B, 6ms]
+  ┌
+  │ 'Order status in store:success, reason: '
+  └
+  √  Проверить статус заказа 1 на складе
+
+└ Проверить статус оплаты заказа 1
+  GET http://arch.homework/payment/11 [200 OK, 310B, 7ms]
+  ┌
+  │ 'Payment status:success, reason: '
+  └
+  √  Проверить статус оплаты заказа 1
+
+└ Проверить статус доставки заказа 1
+  GET http://arch.homework/delivery/11 [200 OK, 383B, 7ms]
+  ┌
+  │ 'Delivery status:success, reason: '
+  └
+  √  Проверить статус доставки заказа 1
+
+□ Заказ 2 (ошибка склада)
+└ Создать заказ 2
+  POST http://arch.homework/order/ [200 OK, 401B, 10ms]
+  ┌
+  │ {
+  │   id: 12,
+  │   book_id: 7,
+  │   quantity: 8,
+  │   user_id: 5,
+  │   delivery_address: 'Moscow, Shabolovka, 13',
+  │   delivery_date: '2023-08-23T00:00:00Z',
+  │   status: 'pending',
+  │   reason: '',
+  │   created_at: '2023-08-15T18:14:36.890863927Z',
+  │   modified_at: '2023-08-15T18:14:36.890863927Z'
+  │ }
+  └
+  √  Создать заказ 2
+
+└ Проверить статус заказа 2 через 2 секунды
+  GET http://arch.homework/order/12 [200 OK, 423B, 9ms]
+  ┌
+  │ 'Order status: failed, reason: Not enough books in the
+  │  store'
+  └
+  √  Проверить статус заказа 2 через 2 секунды
+
+└ Проверить статус заказа 2 на складе
+  GET http://arch.homework/store/order/12 [200 OK, 341B, 7ms]
+  ┌
+  │ 'Order status in store:failed, reason: Not enough book
+  │ s in the store'
+  └
+  √  Проверить статус заказа 2 на складе
+
+└ Проверить статус оплаты заказа 2
+  GET http://arch.homework/payment/12 [404 Not Found, 182B, 6ms]
+  ┌
+  │ { error: 'record not found' }
+  └
+  √  Проверить статус оплаты заказа 2
+
+└ Проверить статус доставки заказа 2
+  GET http://arch.homework/delivery/12 [404 Not Found, 182B, 8ms]
+  ┌
+  │ { error: 'record not found' }
+  └
+  √  Проверить статус доставки заказа 2
+
+□ Заказ 3 (ошибка оплаты)
+└ Создать заказ 3
+  POST http://arch.homework/order/ [200 OK, 401B, 8ms]
+  ┌
+  │ {
+  │   id: 13,
+  │   book_id: 7,
+  │   quantity: 3,
+  │   user_id: 5,
+  │   delivery_address: 'Moscow, Shabolovka, 13',
+  │   delivery_date: '2023-08-23T00:00:00Z',
+  │   status: 'pending',
+  │   reason: '',
+  │   created_at: '2023-08-15T18:14:39.377489498Z',
+  │   modified_at: '2023-08-15T18:14:39.377489498Z'
+  │ }
+  └
+  √  Создать заказ 3
+
+└ Проверить статус заказа 3 через 2 секунды
+  GET http://arch.homework/order/13 [200 OK, 411B, 6ms]
+  ┌
+  │ 'Order status: failed, reason: Not enough balance'
+  └
+  √  Проверить статус заказа 3 через 2 секунды
+
+└ Проверить статус заказа 3 на складе
+  GET http://arch.homework/store/order/13 [200 OK, 328B, 7ms]
+  ┌
+  │ 'Order status in store:canceled, reason: Payment faile
+  │ d'
+  └
+  √  Проверить статус заказа 3 на складе
+
+└ Проверить статус оплаты заказа 3
+  GET http://arch.homework/payment/13 [200 OK, 328B, 6ms]
+  ┌
+  │ 'Payment status:failed, reason: Not enough balance'
+  └
+  √  Проверить статус оплаты заказа 3
+
+└ Проверить статус доставки заказа 3
+  GET http://arch.homework/delivery/13 [404 Not Found, 182B, 6ms]
+  ┌
+  │ { error: 'record not found' }
+  └
+  √  Проверить статус доставки заказа 3
+
+□ Заказ 4 (ошибка доставки)
+└ Создать заказ 4
+  POST http://arch.homework/order/ [200 OK, 401B, 8ms]
+  ┌
+  │ {
+  │   id: 14,
+  │   book_id: 7,
+  │   quantity: 1,
+  │   user_id: 5,
+  │   delivery_address: 'Moscow, Shabolovka, 13',
+  │   delivery_date: '2023-08-01T00:00:00Z',
+  │   status: 'pending',
+  │   reason: '',
+  │   created_at: '2023-08-15T18:14:41.862660343Z',
+  │   modified_at: '2023-08-15T18:14:41.862660343Z'
+  │ }
+  └
+  √  Создать заказ 4
+
+└ Проверить статус заказа 4 через 2 секунды
+  GET http://arch.homework/order/14 [200 OK, 427B, 7ms]
+  ┌
+  │ 'Order status: failed, reason: No couriers available f
+  │ or this date'
+  └
+  √  Проверить статус заказа 4 через 2 секунды
+
+└ Проверить статус заказа 4 на складе
+  GET http://arch.homework/store/order/14 [200 OK, 329B, 6ms]
+  ┌
+  │ 'Order status in store:canceled, reason: Delivery fail
+  │ ed'
+  └
+  √  Проверить статус заказа 4 на складе
+
+└ Проверить статус оплаты заказа 4
+  GET http://arch.homework/payment/14 [200 OK, 326B, 6ms]
+  ┌
+  │ 'Payment status:canceled, reason: Delivery failed'
+  └
+  √  Проверить статус оплаты заказа 4
+
+└ Проверить статус доставки заказа 4
+  GET http://arch.homework/delivery/14 [200 OK, 417B, 6ms]
+  ┌
+  │ 'Delivery status:failed, reason: No couriers available
+  │  for this date'
+  └
+  √  Проверить статус доставки заказа 4
+
+┌─────────────────────────┬──────────────────┬──────────────────┐
+│                         │         executed │           failed │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│              iterations │                1 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│                requests │               23 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│            test-scripts │               46 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│      prerequest-scripts │               27 │                0 │
+├─────────────────────────┼──────────────────┼──────────────────┤
+│              assertions │               23 │                0 │
+├─────────────────────────┴──────────────────┴──────────────────┤
+│ total run duration: 10.3s                                     │
+├───────────────────────────────────────────────────────────────┤
+│ total data received: 4.33kB (approx)                          │
+├───────────────────────────────────────────────────────────────┤
+│ average response time: 11ms [min: 6ms, max: 92ms, s.d.: 17ms] │
+└───────────────────────────────────────────────────────────────┘
